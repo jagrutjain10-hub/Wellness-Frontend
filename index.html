@@ -190,7 +190,14 @@ let state={
   weeklyLogs:[],monthlyLogs:[],bests:null,analyticsLoading:false,
 };
 
-function setState(patch){Object.assign(state,patch);renderApp();}
+function setState(patch){
+  const tabsEl = document.querySelector('.tabs');
+  const scrollLeft = tabsEl ? tabsEl.scrollLeft : 0;
+  Object.assign(state,patch);
+  renderApp();
+  const newTabsEl = document.querySelector('.tabs');
+  if(newTabsEl) newTabsEl.scrollLeft = scrollLeft;
+}
 const app=document.getElementById('app');
 function renderApp(){
   if(!Auth.ok()){app.innerHTML=authView();bindAuth();return;}
