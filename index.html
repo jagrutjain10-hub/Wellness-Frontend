@@ -191,12 +191,20 @@ let state={
 };
 
 function setState(patch){
-  const tabsEl = document.querySelector('.tabs');
-  const scrollLeft = tabsEl ? tabsEl.scrollLeft : 0;
   Object.assign(state,patch);
   renderApp();
-  const newTabsEl = document.querySelector('.tabs');
-  if(newTabsEl) newTabsEl.scrollLeft = scrollLeft;
+  setTimeout(() => {
+    const tabsContainer = document.querySelector('.tabs');
+    const activeTab = document.querySelector('.tab.active, .tab.dev-active');
+    if(tabsContainer && activeTab) {
+      const containerLeft = tabsContainer.getBoundingClientRect().left;
+      const tabLeft = activeTab.getBoundingClientRect().left;
+      const tabWidth = activeTab.offsetWidth;
+      const containerWidth = tabsContainer.offsetWidth;
+      const targetScroll = tabsContainer.scrollLeft + tabLeft - containerLeft - (containerWidth / 2) + (tabWidth / 2);
+      tabsContainer.scrollTo({left: targetScroll, behavior: 'smooth'});
+    }
+  }, 30);
 }
 const app=document.getElementById('app');
 function renderApp(){
